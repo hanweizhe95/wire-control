@@ -12,7 +12,7 @@ Window {
     height: Screen.height//600
 
     color: "#161616"
-    title: "盛达无人矿卡线控底盘测试系统"
+    title: "Volkswagen Wire Control Test"
 
     ValueSource {
         id: valueSource

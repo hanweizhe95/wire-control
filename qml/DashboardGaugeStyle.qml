@@ -127,8 +127,8 @@ CircularGaugeStyle {
             anchors.horizontalCenter: parent.horizontalCenter
         }
         Image {
-            id: weichaiLogo
-            source: "qrc:/images/weichai_logo.jpg"
+            id: vwLogo
+            source: "qrc:/images/vw_logo.jpg"
             height: parent.height / 8
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top

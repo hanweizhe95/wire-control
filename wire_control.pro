@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = senta_truck
+TARGET = wire_control
 INCLUDEPATH += .
 QT = core qml
 QT += quick
@@ -13,7 +13,7 @@ SOURCES += \
     xbox.cpp
 
 RESOURCES += \
-    senta_truck.qrc
+    wire_control.qrc
 
 OTHER_FILES += \
     qml/main.qml\
@@ -23,9 +23,6 @@ OTHER_FILES += \
     qml/TurnIndicator.qml \
     qml/ValueSource.qml \
     qml/ADAS.qml
-
-target.path = $$[QT_INSTALL_EXAMPLES]/quickcontrols/extras/dashboard
-INSTALLS += target
 
 DISTFILES += \
     qml/Can.qml \
