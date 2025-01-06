@@ -1,39 +1,36 @@
 TEMPLATE = app
 TARGET = wire_control
-INCLUDEPATH += .
+INCLUDEPATH += \
+    $$PWD/src/can \
+    $$PWD/src/joystick
 QT = core qml
 QT += quick
 
 SOURCES += \
-    can0rx.cpp \
-    can0tx.cpp \
-    can1rx.cpp \
-    can1tx.cpp \
-    main.cpp \
-    xbox.cpp
+    $$PWD/src/can/*.cpp \
+    $$PWD/src/joystick/*.cpp \
+    $$PWD/src/main.cpp
+    
 
 RESOURCES += \
     wire_control.qrc
 
 OTHER_FILES += \
-    qml/main.qml\
-    qml/DashboardGaugeStyle.qml \
-    qml/IconGaugeStyle.qml \
-    qml/TachometerStyle.qml \
-    qml/TurnIndicator.qml \
-    qml/ValueSource.qml \
-    qml/ADAS.qml
+    $$PWD/qml/main.qml\
+    $$PWD/qml/DashboardGaugeStyle.qml \
+    $$PWD/qml/IconGaugeStyle.qml \
+    $$PWD/qml/TachometerStyle.qml \
+    $$PWD/qml/TurnIndicator.qml \
+    $$PWD/qml/ValueSource.qml \
+    $$PWD/qml/ADAS.qml
 
 DISTFILES += \
-    qml/Can.qml \
-    qml/Dashboard.qml \
-    qml/Dynamic.qml \
-    qml/IconAlert.qml \
-    qml/main.qml
+    $$PWD/qml/Can.qml \
+    $$PWD/qml/Dashboard.qml \
+    $$PWD/qml/Dynamic.qml \
+    $$PWD/qml/IconAlert.qml \
+    $$PWD/qml/main.qml
 
 HEADERS += \
-    can0rx.h \
-    can0tx.h \
-    can1rx.h \
-    can1tx.h \
-    xbox.h
+    $$PWD/src/can/*.h\
+    $$PWD/src/joystick/*.h

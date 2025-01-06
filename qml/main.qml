@@ -553,7 +553,7 @@ Window {
         width: 100
         height: 50
         id:show_time
-        text: qsTr("v(>o<)v")
+        text: qsTr("---")
         onClicked: {
             valueSource.showTime = 1
         }

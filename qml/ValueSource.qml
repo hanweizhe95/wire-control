@@ -93,9 +93,11 @@ Item {
     property bool back_on: false
     property bool leftIndicator: false
     property bool rightIndicator: false
+    property bool hard_light_on: false
     property real turn_Indicator: 0
     property real add_Indicator: 0
     property real turnIndicator: {
+        if(hard_light_on == true){return 3}
         if(turn_Indicator==0){return 0}
         if(turn_Indicator==1){return 2}
         if(turn_Indicator==-1){return 1}
@@ -655,297 +657,285 @@ Item {
         }
     }
 
-    //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv//
+
     /*CAN connections start here*/
-    Can0MoveToThread{id:can0}
-    Connections{
-        target: can0
+    Can0MoveToThread{
+        id:can0
         onDataChanged:{
             switch(can0.id){
-            case 0x61:
-                drive_mode = can0.byte0 & 0x3
-                aeb_active = (can0.byte0>>3)&0x7
-                acc_state = can0.byte0>>6
-                milage = 0.125*(can0.byte7*16777216+can0.byte6*65536+can0.byte5*256+can0.byte4)
-                //kph = 0.01*(can0.byte3*256+can0.byte2)
-                break;
-            case 0x63:
-                rpm = 0.125*(can0.byte4*256+can0.byte3)
-                alertEOBD = (can0.byte5&0x7)>>2
-                break;
-            case 0x65:
-                str_ang_fl = (can0.byte1*256+can0.byte0)*0.01-157.5
-                str_ang_fr = (can0.byte3*256+can0.byte2)*0.01-157.5
-                break;
-            case 0x67:
-                if((can0.byte0&0x3) == 0){gear="P"}
-                if((can0.byte0&0x3) == 1){gear="R"}
-                if((can0.byte0&0x3) == 2){gear="D"}
-                if((can0.byte0&0x3) == 3){gear="N"}
-                break;
-            case 0x69:
-                alertWornOutBrakePad = can0.byte4&0x1
-                alertEPB = can0.byte7&0x1
-                longi_aclrtn = can0.byte2*0.1-12.5
-                //latrl_aclrtn = can0.byte3*0.1-12.
-                break;
-            case 0x6B:
-                alertHighBeam = can0.byte5>>4
-                alertLowBeam = can0.byte5&0xF
-                alertLightBulbBlown = can0.byte2>>4
-                alertWidthLight = can0.byte4>>4
-                leftTurnSignal = can0.byte3&0xF
-                rightTurnSignal = can0.byte3>>4
-                alertFrontFog = can0.byte6>>4
-                break;
-            case 0x6D:
-                kph = ((can0.byte1*256+can0.byte0)*0.00390625+(can0.byte3*256+can0.byte2)*0.00390625)*0.5
-                break;
-            case 0x6F:
-                waterTemp = can0.byte0 / 160
-                break;
-            case 0x71:
-                liftAng = 0.1*(can0.byte0+can0.byte1*256)
-                break;
-            case 0x73:
-                pressureFA = can0.byte6 * 4
-                pressureRA = can0.byte7 * 4
-                break;
-            case 0x311:
-                ego_veh_hori_offset = -(((can0.byte1&0xF)*255+can0.byte0)*0.01-16)
-                break;
+                case 0x61:
+                    drive_mode = can0.byte0 & 0x3
+                    aeb_active = (can0.byte0>>3)&0x7
+                    acc_state = can0.byte0>>6
+                    milage = 0.125*(can0.byte7*16777216+can0.byte6*65536+can0.byte5*256+can0.byte4)
+                    //kph = 0.01*(can0.byte3*256+can0.byte2)
+                    break;
+                case 0x63:
+                    rpm = 0.125*(can0.byte4*256+can0.byte3)
+                    alertEOBD = (can0.byte5&0x7)>>2
+                    break;
+                case 0x65:
+                    str_ang_fl = (can0.byte1*256+can0.byte0)*0.01-157.5
+                    str_ang_fr = (can0.byte3*256+can0.byte2)*0.01-157.5
+                    break;
+                case 0x67:
+                    if((can0.byte0&0x3) == 0){gear="P"}
+                    if((can0.byte0&0x3) == 1){gear="R"}
+                    if((can0.byte0&0x3) == 2){gear="D"}
+                    if((can0.byte0&0x3) == 3){gear="N"}
+                    break;
+                case 0x69:
+                    alertWornOutBrakePad = can0.byte4&0x1
+                    alertEPB = can0.byte7&0x1
+                    longi_aclrtn = can0.byte2*0.1-12.5
+                    //latrl_aclrtn = can0.byte3*0.1-12.
+                    break;
+                case 0x6B:
+                    alertHighBeam = can0.byte5>>4
+                    alertLowBeam = can0.byte5&0xF
+                    alertLightBulbBlown = can0.byte2>>4
+                    alertWidthLight = can0.byte4>>4
+                    leftTurnSignal = can0.byte3&0xF
+                    rightTurnSignal = can0.byte3>>4
+                    alertFrontFog = can0.byte6>>4
+                    break;
+                case 0x6D:
+                    kph = ((can0.byte1*256+can0.byte0)*0.00390625+(can0.byte3*256+can0.byte2)*0.00390625)*0.5
+                    break;
+                case 0x6F:
+                    waterTemp = can0.byte0 / 160
+                    break;
+                case 0x71:
+                    liftAng = 0.1*(can0.byte0+can0.byte1*256)
+                    break;
+                case 0x73:
+                    pressureFA = can0.byte6 * 4
+                    pressureRA = can0.byte7 * 4
+                    break;
+                case 0x311:
+                    ego_veh_hori_offset = -(((can0.byte1&0xF)*255+can0.byte0)*0.01-16)
+                    break;
             }
         }
     }
-    Can1MoveToThread{id:can1}
-    Connections{
-        target: can1
+
+    Can1MoveToThread{
+        id:can1
         onDataChanged:{
-            switch(can1.id){
-            case 0x311:
-                ego_veh_hori_offset = -(((can1.byte1&0xF)*255+can1.byte0)*0.01-16)
-                break;
-            case 0x60b:
-                obstacles_x = -((can1.byte2&0x7)*256+can1.byte3)*0.2+204.6
-                obstacles_y = (can1.byte1*32+(can1.byte2&0xF8)/8)*0.2-500
-                console.log(can1.byte0+":("+obstacles_x+","+obstacles_y+")")
-                switch(can1.byte0){
-                case 0:
-                    obstacle_0_x=obstacles_x
-                    obstacle_0_y=obstacles_y
-                    obstacle_0_flag=0
-                    obstacle_0_flag=1
+            switch(can1.id) {
+                case 0x311:
+                    ego_veh_hori_offset = -(((can1.byte1&0xF)*255+can1.byte0)*0.01-16)
                     break;
-                case 1:
-                    obstacle_1_x=obstacles_x
-                    obstacle_1_y=obstacles_y
-                    obstacle_1_flag=0
-                    obstacle_1_flag=1
+                case 0x60b:
+                    obstacles_x = -((can1.byte2&0x7)*256+can1.byte3)*0.2+204.6
+                    obstacles_y = (can1.byte1*32+(can1.byte2&0xF8)/8)*0.2-500
+                    console.log(can1.byte0+":("+obstacles_x+","+obstacles_y+")")
+                    switch(can1.byte0){
+                        case 0:
+                            obstacle_0_x=obstacles_x
+                            obstacle_0_y=obstacles_y
+                            obstacle_0_flag=0
+                            obstacle_0_flag=1
+                            break;
+                        case 1:
+                            obstacle_1_x=obstacles_x
+                            obstacle_1_y=obstacles_y
+                            obstacle_1_flag=0
+                            obstacle_1_flag=1
+                            break;
+                        case 2:
+                            obstacle_2_x=obstacles_x
+                            obstacle_2_y=obstacles_y
+                            obstacle_2_flag=0
+                            obstacle_2_flag=1
+                            break;
+                        case 3:
+                            obstacle_3_x=obstacles_x
+                            obstacle_3_y=obstacles_y
+                            obstacle_3_flag=0
+                            obstacle_3_flag=1
+                            break;
+                        case 4:
+                            obstacle_4_x=obstacles_x
+                            obstacle_4_y=obstacles_y
+                            obstacle_4_flag=0
+                            obstacle_4_flag=1
+                            break;
+                        case 5:
+                            obstacle_5_x=obstacles_x
+                            obstacle_5_y=obstacles_y
+                            obstacle_5_flag=0
+                            obstacle_5_flag=1
+                            break;
+                        case 6:
+                            obstacle_6_x=obstacles_x
+                            obstacle_6_y=obstacles_y
+                            obstacle_6_flag=0
+                            obstacle_6_flag=1
+                            break;
+                        case 7:
+                            obstacle_7_x=obstacles_x
+                            obstacle_7_y=obstacles_y
+                            obstacle_7_flag=0
+                            obstacle_7_flag=1
+                            break;
+                        case 8:
+                            obstacle_8_x=obstacles_x
+                            obstacle_8_y=obstacles_y
+                            obstacle_8_flag=0
+                            obstacle_8_flag=1
+                            break;
+                        case 9:
+                            obstacle_9_x=obstacles_x
+                            obstacle_9_y=obstacles_y
+                            obstacle_9_flag=0
+                            obstacle_9_flag=1
+                            break;
+                        case 10:
+                            obstacle_10_x=obstacles_x
+                            obstacle_10_y=obstacles_y
+                            obstacle_10_flag=0
+                            obstacle_10_flag=1
+                            break;
+                        case 11:
+                            obstacle_11_x=obstacles_x
+                            obstacle_11_y=obstacles_y
+                            obstacle_11_flag=0
+                            obstacle_11_flag=1
+                            break;
+                        case 12:
+                            obstacle_12_x=obstacles_x
+                            obstacle_12_y=obstacles_y
+                            obstacle_12_flag=0
+                            obstacle_12_flag=1
+                            break;
+                        case 13:
+                            obstacle_13_x=obstacles_x
+                            obstacle_13_y=obstacles_y
+                            obstacle_13_flag=0
+                            obstacle_13_flag=1
+                            break;
+                        case 14:
+                            obstacle_14_x=obstacles_x
+                            obstacle_14_y=obstacles_y
+                            obstacle_14_flag=0
+                            obstacle_14_flag=1
+                            break;
+                        case 15:
+                            obstacle_15_x=obstacles_x
+                            obstacle_15_y=obstacles_y
+                            obstacle_15_flag=0
+                            obstacle_15_flag=1
+                            break;
+                        case 16:
+                            obstacle_16_x=obstacles_x
+                            obstacle_16_y=obstacles_y
+                            obstacle_16_flag=0
+                            obstacle_16_flag=1
+                            break;
+                        case 17:
+                            obstacle_17_x=obstacles_x
+                            obstacle_17_y=obstacles_y
+                            obstacle_17_flag=0
+                            obstacle_17_flag=1
+                            break;
+                        case 18:
+                            obstacle_18_x=obstacles_x
+                            obstacle_18_y=obstacles_y
+                            obstacle_18_flag=0
+                            obstacle_18_flag=1
+                            break;
+                        case 19:
+                            obstacle_19_x=obstacles_x
+                            obstacle_19_y=obstacles_y
+                            obstacle_19_flag=0
+                            obstacle_19_flag=1
+                            break;
+                        case 20:
+                            obstacle_20_x=obstacles_x
+                            obstacle_20_y=obstacles_y
+                            obstacle_20_flag=0
+                            obstacle_20_flag=1
+                            break;
+                        case 21:
+                            obstacle_21_x=obstacles_x
+                            obstacle_21_y=obstacles_y
+                            obstacle_21_flag=0
+                            obstacle_21_flag=1
+                            break;
+                        case 22:
+                            obstacle_22_x=obstacles_x
+                            obstacle_22_y=obstacles_y
+                            obstacle_22_flag=0
+                            obstacle_22_flag=1
+                            break;
+                        case 23:
+                            obstacle_23_x=obstacles_x
+                            obstacle_23_y=obstacles_y
+                            obstacle_23_flag=0
+                            obstacle_23_flag=1
+                            break;
+                        case 24:
+                            obstacle_24_x=obstacles_x
+                            obstacle_24_y=obstacles_y
+                            obstacle_24_flag=0
+                            obstacle_24_flag=1
+                            break;
+                        case 25:
+                            obstacle_25_x=obstacles_x
+                            obstacle_25_y=obstacles_y
+                            obstacle_25_flag=0
+                            obstacle_25_flag=1
+                            break;
+                        case 26:
+                            obstacle_26_x=obstacles_x
+                            obstacle_26_y=obstacles_y
+                            obstacle_26_flag=0
+                            obstacle_26_flag=1
+                            break;
+                        case 27:
+                            obstacle_27_x=obstacles_x
+                            obstacle_27_y=obstacles_y
+                            obstacle_27_flag=0
+                            obstacle_27_flag=1
+                            break;
+                        case 28:
+                            obstacle_28_x=obstacles_x
+                            obstacle_28_y=obstacles_y
+                            obstacle_28_flag=0
+                            obstacle_28_flag=1
+                            break;
+                        case 29:
+                            obstacle_29_x=obstacles_x
+                            obstacle_29_y=obstacles_y
+                            obstacle_29_flag=0
+                            obstacle_29_flag=1
+                            break;
+                        case 30:
+                            obstacle_30_x=obstacles_x
+                            obstacle_30_y=obstacles_y
+                            obstacle_30_flag=0
+                            obstacle_30_flag=1
+                            break;
+                        case 31:
+                            obstacle_31_x=obstacles_x
+                            obstacle_31_y=obstacles_y
+                            obstacle_31_flag=0
+                            obstacle_31_flag=1
+                            break;
+                    }
                     break;
-                case 2:
-                    obstacle_2_x=obstacles_x
-                    obstacle_2_y=obstacles_y
-                    obstacle_2_flag=0
-                    obstacle_2_flag=1
-                    break;
-                case 3:
-                    obstacle_3_x=obstacles_x
-                    obstacle_3_y=obstacles_y
-                    obstacle_3_flag=0
-                    obstacle_3_flag=1
-                    break;
-                case 4:
-                    obstacle_4_x=obstacles_x
-                    obstacle_4_y=obstacles_y
-                    obstacle_4_flag=0
-                    obstacle_4_flag=1
-                    break;
-                case 5:
-                    obstacle_5_x=obstacles_x
-                    obstacle_5_y=obstacles_y
-                    obstacle_5_flag=0
-                    obstacle_5_flag=1
-                    break;
-                case 6:
-                    obstacle_6_x=obstacles_x
-                    obstacle_6_y=obstacles_y
-                    obstacle_6_flag=0
-                    obstacle_6_flag=1
-                    break;
-                case 7:
-                    obstacle_7_x=obstacles_x
-                    obstacle_7_y=obstacles_y
-                    obstacle_7_flag=0
-                    obstacle_7_flag=1
-                    break;
-                case 8:
-                    obstacle_8_x=obstacles_x
-                    obstacle_8_y=obstacles_y
-                    obstacle_8_flag=0
-                    obstacle_8_flag=1
-                    break;
-                case 9:
-                    obstacle_9_x=obstacles_x
-                    obstacle_9_y=obstacles_y
-                    obstacle_9_flag=0
-                    obstacle_9_flag=1
-                    break;
-                case 10:
-                    obstacle_10_x=obstacles_x
-                    obstacle_10_y=obstacles_y
-                    obstacle_10_flag=0
-                    obstacle_10_flag=1
-                    break;
-                case 11:
-                    obstacle_11_x=obstacles_x
-                    obstacle_11_y=obstacles_y
-                    obstacle_11_flag=0
-                    obstacle_11_flag=1
-                    break;
-                case 12:
-                    obstacle_12_x=obstacles_x
-                    obstacle_12_y=obstacles_y
-                    obstacle_12_flag=0
-                    obstacle_12_flag=1
-                    break;
-                case 13:
-                    obstacle_13_x=obstacles_x
-                    obstacle_13_y=obstacles_y
-                    obstacle_13_flag=0
-                    obstacle_13_flag=1
-                    break;
-                case 14:
-                    obstacle_14_x=obstacles_x
-                    obstacle_14_y=obstacles_y
-                    obstacle_14_flag=0
-                    obstacle_14_flag=1
-                    break;
-                case 15:
-                    obstacle_15_x=obstacles_x
-                    obstacle_15_y=obstacles_y
-                    obstacle_15_flag=0
-                    obstacle_15_flag=1
-                    break;
-                case 16:
-                    obstacle_16_x=obstacles_x
-                    obstacle_16_y=obstacles_y
-                    obstacle_16_flag=0
-                    obstacle_16_flag=1
-                    break;
-                case 17:
-                    obstacle_17_x=obstacles_x
-                    obstacle_17_y=obstacles_y
-                    obstacle_17_flag=0
-                    obstacle_17_flag=1
-                    break;
-                case 18:
-                    obstacle_18_x=obstacles_x
-                    obstacle_18_y=obstacles_y
-                    obstacle_18_flag=0
-                    obstacle_18_flag=1
-                    break;
-                case 19:
-                    obstacle_19_x=obstacles_x
-                    obstacle_19_y=obstacles_y
-                    obstacle_19_flag=0
-                    obstacle_19_flag=1
-                    break;
-                case 20:
-                    obstacle_20_x=obstacles_x
-                    obstacle_20_y=obstacles_y
-                    obstacle_20_flag=0
-                    obstacle_20_flag=1
-                    break;
-                case 21:
-                    obstacle_21_x=obstacles_x
-                    obstacle_21_y=obstacles_y
-                    obstacle_21_flag=0
-                    obstacle_21_flag=1
-                    break;
-                case 22:
-                    obstacle_22_x=obstacles_x
-                    obstacle_22_y=obstacles_y
-                    obstacle_22_flag=0
-                    obstacle_22_flag=1
-                    break;
-                case 23:
-                    obstacle_23_x=obstacles_x
-                    obstacle_23_y=obstacles_y
-                    obstacle_23_flag=0
-                    obstacle_23_flag=1
-                    break;
-                case 24:
-                    obstacle_24_x=obstacles_x
-                    obstacle_24_y=obstacles_y
-                    obstacle_24_flag=0
-                    obstacle_24_flag=1
-                    break;
-                case 25:
-                    obstacle_25_x=obstacles_x
-                    obstacle_25_y=obstacles_y
-                    obstacle_25_flag=0
-                    obstacle_25_flag=1
-                    break;
-                case 26:
-                    obstacle_26_x=obstacles_x
-                    obstacle_26_y=obstacles_y
-                    obstacle_26_flag=0
-                    obstacle_26_flag=1
-                    break;
-                case 27:
-                    obstacle_27_x=obstacles_x
-                    obstacle_27_y=obstacles_y
-                    obstacle_27_flag=0
-                    obstacle_27_flag=1
-                    break;
-                case 28:
-                    obstacle_28_x=obstacles_x
-                    obstacle_28_y=obstacles_y
-                    obstacle_28_flag=0
-                    obstacle_28_flag=1
-                    break;
-                case 29:
-                    obstacle_29_x=obstacles_x
-                    obstacle_29_y=obstacles_y
-                    obstacle_29_flag=0
-                    obstacle_29_flag=1
-                    break;
-                case 30:
-                    obstacle_30_x=obstacles_x
-                    obstacle_30_y=obstacles_y
-                    obstacle_30_flag=0
-                    obstacle_30_flag=1
-                    break;
-                case 31:
-                    obstacle_31_x=obstacles_x
-                    obstacle_31_y=obstacles_y
-                    obstacle_31_flag=0
-                    obstacle_31_flag=1
-                    break;
-                }
-//                obstacles_x[can1.byte0]=((can1.byte2&7)<<8+can1.byte3)*0.2-204.6
-//                console.log(can1.byte0,obstacles_x[can1.byte0])
-//                obstacles_y[can1.byte0]=(can1.byte1<<5+can1.byte2>>3)*0.2-500
-//                obstacles_flag[can1.byte0]=0
-//                obstacles_flag[can1.byte0]=1
-                break;
-
             }
         }
     }
-    /*End of CAN connections*/
-    //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^//
 
-    //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv//
+
     /*XBOX coonections start here*/
-    XboxMoveToThread{id:xbox}
-    Connections{
-        target: xbox
+    XboxMoveToThread{
+        id:xbox
         onDataChanged:{
-            if (xbox.type == 1)//JS_EVENT_BUTTON
-            {
-                switch(xbox.number)
-                {
+            if(xbox.type == 1) {
+                switch(xbox.number) {
                     case 0://XBOX_BUTTON_A:
                         if(xbox.value){lowBeam_on=!lowBeam_on}
                         break;
@@ -1001,28 +991,23 @@ Item {
                         break;
                 }
             }
-            else if(xbox.type == 2)//JS_EVENT_AXIS
-            {
-                switch(xbox.number)
-                {
+            else if(xbox.type == 2) {
+                switch(xbox.number) {
                     case 0://XBOX_AXIS_LX:
                         str_whl_ang = xbox.value*str_whl_ang_max/32767
                         break;
 
                     case 1://XBOX_AXIS_LY:
-                        if(xbox.value>22000){
+                        if(xbox.value>22000) {
                             add_Indicator = -1;
-                        }
-                        else if(xbox.value<-22000){
+                        }else if(xbox.value<-22000) {
                             add_Indicator = 1;
-                        }
-                        else{
-                            if((turn_Indicator<1&&add_Indicator>0)||(turn_Indicator>-1&&add_Indicator<0)){
+                        }else {
+                            if((turn_Indicator<1&&add_Indicator>0)||(turn_Indicator>-1&&add_Indicator<0)) {
                                 turn_Indicator += add_Indicator;
                             }
                             add_Indicator = 0;
                         }
-
                         //console.log(xbox.value,add_Indicator)
                         break;
 
@@ -1083,6 +1068,7 @@ Item {
             }
         }
     }
+
     //wireless
     /*Connections{
         target: xbox
@@ -1251,8 +1237,6 @@ Item {
         }
     }*/
 
-    /*End of XBOX connections*/
-    //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^//
 
     SequentialAnimation {
         id: animation
@@ -1272,7 +1256,7 @@ Item {
 
         SequentialAnimation {
             loops: Animation.Infinite
-//! [1]
+
             ParallelAnimation {
                 NumberAnimation {
                     target: valueSource
@@ -1291,7 +1275,7 @@ Item {
                     duration: 3000
                 }
             }
-//! [1]
+
             ParallelAnimation {
                 // We changed gears so we lost a bit of speed.
                 NumberAnimation {

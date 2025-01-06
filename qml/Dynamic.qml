@@ -1385,22 +1385,22 @@ Item {
             }
         }
     }
-    Image {
-        id: withOutTruck
-        source: "qrc:/images/dynamic/without_truck.png"
-        width: parent.width
-        height: width/1081*602
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.topMargin: width*2.3
-    }
-    Image {
-        id: truck
-        source: "qrc:/images/dynamic/truck.png"
-        height: withOutTruck.height
-        width: 1707/603*height
-        anchors.horizontalCenter: withOutTruck.left
-        anchors.top: withOutTruck.top
-        rotation: -valueSource.liftAng
-    }
+    // Image {
+    //     id: withOutTruck
+    //     source: "qrc:/images/dynamic/without_truck.png"
+    //     width: parent.width
+    //     height: width/1081*602
+    //     anchors.right: parent.right
+    //     anchors.top: parent.top
+    //     anchors.topMargin: width*2.3
+    // }
+    // Image {
+    //     id: truck
+    //     source: "qrc:/images/dynamic/truck.png"
+    //     height: withOutTruck.height
+    //     width: 1707/603*height
+    //     anchors.horizontalCenter: withOutTruck.left
+    //     anchors.top: withOutTruck.top
+    //     rotation: -valueSource.liftAng
+    // }
 }
