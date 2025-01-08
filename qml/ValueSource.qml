@@ -114,9 +114,11 @@ Item {
     property real gear_stat: 1
     property real add_gear: 0
     property real gearStat:{
+        if (driveMode == 0){return 0}
+        if (epb_on){return 4}
         if (gear_stat == 0){return 2}
-        if (gear_stat == 1){return 3}
-        if (gear_stat == 2){return 1}
+        if (gear_stat == 1){return 1}
+        if (gear_stat == 2){return 3}
         else{return 0}
     }
 

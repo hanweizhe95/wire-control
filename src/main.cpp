@@ -76,13 +76,6 @@
 
 int main(int argc, char *argv[])
 {
-
-    system("sudo ifconfig can0 down");
-    system("sudo ip link set can0 type can bitrate 250000");
-    system("sudo ifconfig can0 up");
-    system("sudo ifconfig can1 down");
-    system("sudo ip link set can1 type can bitrate 500000");
-    system("sudo ifconfig can1 up");
     QGuiApplication app(argc, argv);
 
     qRegisterMetaType<can_frame>("can_frame");
